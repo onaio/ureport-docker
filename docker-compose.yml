@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  ureport:
+    build:
+      context: .
+      args:
+        UREPORT_VERSION: v1.1.250
+    volumes:
+      - static_files:/ureport/sitestatic
+    depends_on:
+      - redis
+      - postgresql
+    env_file: ureport.env
+    command: ureport
+  celery:
+    build:
+      context: .
+      args:
+        UREPORT_VERSION: v1.1.250
+    depends_on:
+      - ureport
+    links:
+      - redis
+      - postgresql
+    env_file: ureport.env
+    environment:
+      - MANAGEPY_MIGRATE=off
+      - MANAGEPY_COLLECSTATIC=off
+      - MANAGEPY_COMPRESS=off
+      - MANAGEPY_ADD_COUNTRY_ALIAS=off
+    command: celery
+  celery-beat:
+    build:
+      context: .
+      args:
+        UREPORT_VERSION: v1.1.250
+    depends_on:
+      - ureport
+    links:
+      - redis
+      - postgresql
+    env_file: ureport.env
+    environment:
+      - MANAGEPY_MIGRATE=off
+      - MANAGEPY_COLLECSTATIC=off
+      - MANAGEPY_COMPRESS=off
+      - MANAGEPY_ADD_COUNTRY_ALIAS=off
+    command: celery-beat
+  nginx:
+    build: ./nginx/
+    ports:
+      - 8000:80
+    volumes:
+      - static_files:/www/sitestatic
+    links:
+      - ureport
+  redis:
+    image: redis:alpine
+  postgresql:
+    image: postgis/postgis:10-3.1-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ureport
+
+volumes:
+  pg_data:
+  static_files:
