@@ -36,6 +36,7 @@ RUN set -ex \
   binutils \
   libproj-dev \
   gdal-bin \
+  git \
   " \
   && apt-get update \
   && apt-get install -y --no-install-recommends $RUN_DEPS \
