@@ -52,12 +52,10 @@ COPY requirements.txt /requirements.txt
 
 # Install build deps:
 RUN set -ex \
-  && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && BUILD_DEPS=" \
     build-essential \
     curl \
     libpq-dev \
-    nodejs \
   " \
   && apt-get update \
   && apt-get install -y --no-install-recommends $BUILD_DEPS \
@@ -66,6 +64,9 @@ RUN set -ex \
   && poetry --version \
   && poetry install --no-dev \
   && pip install --no-cache-dir -r /requirements.txt \
+  # install nodejs
+  && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+  && apt-get install -y nodejs \
   # install less and coffeescript
   && npm install -g coffeescript less \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
