@@ -31,6 +31,7 @@ RUN set -ex \
   && RUN_DEPS=" \
   postgresql-client \
   wget \
+  vim \
   binutils \
   libproj-dev \
   gdal-bin \
