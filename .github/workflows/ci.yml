@@ -2,21 +2,16 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      ureportVersion:
+        description: 'UReport Version'
+        required: true
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: Get latest UReport version
-        uses: oprypin/find-latest-tag@v1
-        with:
-          repository: rapidpro/ureport
-          prefix: 'v'
-        id: ureport_version
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -36,9 +31,9 @@ jobs:
           push: true
           tags: |
             onaio/ureport:latest
-            onaio/ureport:${{ steps.ureport_version.outputs.tag }}
+            onaio/ureport:${{ github.event.inputs.ureportVersion }}
           build-args: |
-            UREPORT_VERSION=${{ steps.ureport_version.outputs.tag }}
+            UREPORT_VERSION=${{ github.event.inputs.ureportVersion }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
