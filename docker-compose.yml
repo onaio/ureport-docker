@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        UREPORT_VERSION: v1.1.250
+        UREPORT_VERSION: v1.2.25
     volumes:
       - static_files:/ureport/sitestatic
     depends_on:
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       args:
-        UREPORT_VERSION: v1.1.250
+        UREPORT_VERSION: v1.2.25
     depends_on:
       - ureport
     links:
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       args:
-        UREPORT_VERSION: v1.1.250
+        UREPORT_VERSION: v1.2.25
     depends_on:
       - ureport
     links:
